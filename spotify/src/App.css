@@ -14,3 +14,7 @@
     min-width: 100%;
     padding: 0px;
 }
+
+.fixed {
+    min-width: 220px;
+}

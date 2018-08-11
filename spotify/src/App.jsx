@@ -36,16 +36,20 @@ class App extends React.Component {
 
     spotifyApi.setAccessToken(accessToken);
 
-    if (!accessToken)
+    if (!accessToken) {
       return;
+    }
+
     fetch('https://api.spotify.com/v1/me', {
       headers: {'Authorization': 'Bearer ' + accessToken}
     }).then(response => response.json())
-    .then(data => this.setState({
+    .then(data => {
+      console.log(data);
+      this.setState({
       user: {
         name: data.id
       }
-    }))
+    })})
   }
 
   changeHandler(event) {
@@ -127,7 +131,6 @@ class App extends React.Component {
         <Navbar onChange={this.changeHandler} user={this.state.user.name} />
         <div className="row">
           <div className="col-sm-2">
-            <h4>Sidebar</h4>
           </div>
           <div className="col-sm-10">
             <Gallery query={this.state.query} artists={this.state.artists} tracks={this.state.tracks} />
