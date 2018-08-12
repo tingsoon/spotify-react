@@ -3,6 +3,7 @@ import './App.css';
 
 import Navbar from './components/navbar/navbar';
 import Gallery from './components/gallery/gallery';
+import Sidebar from './components/sidebar/sidebar';
 
 import SpotifyWebApi from 'spotify-web-api-js';
 import Q from 'q';
@@ -17,14 +18,18 @@ class App extends React.Component {
   constructor() {
     super()
     this.changeHandler = this.changeHandler.bind( this );
-    // this.clickHandler = this.clickHandler.bind( this );
+    this.clickHandler = this.clickHandler.bind( this );
+    this.playAudio = this.playAudio.bind( this );
     this.state = {
       query: '',
       artists: [],
       tracks: [],
       user: {
         name: ''
-      }
+      },
+      playingUrl: '',
+      audio: null,
+      playing: false
     };
   }
 
@@ -75,8 +80,42 @@ class App extends React.Component {
     }, function(err) {
       console.error(err);
     });
+  }
 
+  clickHandler(event) {
+    if(this.state.playing) {
+        this.state.audio.pause();
+        this.setState({ playing: false })
+    } else {
+        this.state.audio.play();
+        this.setState({ playing: true })
+    }
+  }
 
+  playAudio(tracks) {
+    console.log("play audio is clicked!");
+    console.log(tracks);
+    let previewUrl = tracks.preview_url
+    let audio = new Audio(previewUrl);
+    if(!this.state.playing) {
+        audio.play();
+        this.setState({ playing: true,
+                        playingUrl: previewUrl,
+                        audio
+                })
+    } else {
+        if (this.state.playingUrl === previewUrl) {
+            this.state.audio.pause();
+            this.setState ({ playing: false })
+        } else {
+            this.state.audio.pause();
+            audio.play();
+            this.setState({ playing: true,
+                            playingUrl: previewUrl,
+                            audio 
+                    })
+        }
+    }
   }
 
   // clickHandler(event) {
@@ -127,13 +166,29 @@ class App extends React.Component {
 
   render() {
     return (
+
       <div className="container app-window">
         <Navbar onChange={this.changeHandler} user={this.state.user.name} />
         <div className="row">
-          <div className="col-sm-2">
+          <div className="sidenav col-sm-2">
+            <Sidebar />
+            <div className="track-play">
+              <div></div>
+              <div className="track-play-inner" onClick={this.clickHandler} >
+                {
+                this.state.playing === true
+                ? <span>||</span>
+                : <span>&#9654;</span>
+                }
+              </div>
+            </div>
           </div>
-          <div className="col-sm-10">
-            <Gallery query={this.state.query} artists={this.state.artists} tracks={this.state.tracks} />
+          <div className="col-sm-10 main-content">
+              <Gallery query={this.state.query} 
+                      artists={this.state.artists} 
+                      tracks={this.state.tracks} 
+                      playAudio={this.playAudio}
+                      />
           </div>
         </div>
       </div>

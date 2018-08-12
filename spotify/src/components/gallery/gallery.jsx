@@ -2,49 +2,6 @@ import React from 'react';
 import './gallery.css';
 
 class Gallery extends React.Component {
-    constructor() {
-        super();
-        this.clickHandler = this.clickHandler.bind( this );
-        this.state = {
-            playingUrl: '',
-            audio: null,
-            playing: false
-        }
-    }
-
-    clickHandler(event) {
-        if(this.state.playing) {
-            this.state.audio.pause();
-            this.setState({ playing: false })
-        } else {
-            this.state.audio.play();
-            this.setState({ playing: true })
-        }
-    }
-
-    playAudio(previewUrl) {
-        let audio = new Audio(previewUrl);
-        if(!this.state.playing) {
-            audio.play();
-            this.setState({ playing: true,
-                            playingUrl: previewUrl,
-                            audio
-                    })
-        } else {
-            if (this.state.playingUrl === previewUrl) {
-                this.state.audio.pause();
-                this.setState ({ playing: false })
-            } else {
-                this.state.audio.pause();
-                audio.play();
-                this.setState({ playing: true,
-                                playingUrl: previewUrl,
-                                audio 
-                        })
-            }
-        }
-    }
-
 
     render() {
         let searchQuery;
@@ -81,7 +38,7 @@ class Gallery extends React.Component {
         let tracks = this.props.tracks.map( (tracks, id) => {
             return  <tbody key={id}>
                         <tr>
-                            <td onClick={() => this.playAudio(tracks.preview_url)}>{(tracks.name ? tracks.name : '')}</td>
+                            <td onClick={() => this.props.playAudio(tracks)}>{(tracks.name ? tracks.name : '')}</td>
                             <td>{(tracks.artists[0] ? tracks.artists[0].name : '')}</td>
                             <td>{tracks.album.name ? tracks.album.name : ''}</td>
                             <td>{millisToMinutesAndSeconds(tracks.duration_ms)}</td>
@@ -115,15 +72,7 @@ class Gallery extends React.Component {
                 </table>
                 </div>
             )}
-            <div className="track-play">
-                <div className="track-play-inner" onClick={this.clickHandler} >
-                {
-                this.state.playing === true
-                ? <span>||</span>
-                : <span>&#9654;</span>
-                }
-                </div>
-            </div>
+
         </div>
       );
     }
