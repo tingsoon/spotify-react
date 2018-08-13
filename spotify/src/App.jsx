@@ -20,24 +20,40 @@ class App extends React.Component {
     this.changeHandler = this.changeHandler.bind( this );
     this.clickHandler = this.clickHandler.bind( this );
     this.playAudio = this.playAudio.bind( this );
+    this.clickArtist = this.clickArtist.bind( this );
+    this.clickAlbum = this.clickAlbum.bind( this );
+    this.removeArtist = this.removeArtist.bind( this );
     this.state = {
       query: '',
       artists: [],
+      albums: [],
       tracks: [],
       user: {
         name: ''
       },
       playingUrl: '',
       audio: null,
-      playing: false
+      playing: false,
+      preview: {
+        image: './spotify.png',
+        artist: '',
+        title: ''
+      },
+      artistClicked: true,
+      errorMessage: ''
     };
   }
 
   componentDidMount() {
     // this.clickHandler()
+
+    // Setting API for spotify
     let parsed = queryString.parse(window.location.search);
     let accessToken = parsed.access_token;
-    console.log("access token", accessToken)
+    // let refreshToken = parsed.refresh_token;
+    
+    console.log("access token", accessToken);
+    // console.log("refresh token", refreshToken);
 
     spotifyApi.setAccessToken(accessToken);
 
@@ -55,10 +71,20 @@ class App extends React.Component {
         name: data.id
       }
     })})
+
+    // test 
+    // fetch('https://api.spotify.com/v1/me/top/tracks?time_range=long_term', {
+    //   headers: {'Authorization': 'Bearer ' + accessToken}
+    // })
+    // .then(data => {
+    //   console.log(data);
+    // })
+    
   }
 
   changeHandler(event) {
-    this.setState({ query: event.target.value });
+    this.setState({ query: event.target.value,
+                    artistClicked: true });
     console.log("searching", event.target.value);
 
     // search artists
@@ -66,6 +92,16 @@ class App extends React.Component {
     .then(data => {
       let artistData = data.artists.items;
       this.setState({ artists: artistData })
+    }, function(err) {
+      console.error(err);
+    });
+
+    // search albums
+    spotifyApi.searchAlbums(event.target.value)
+    .then(data => {
+      // console.log(data.albums.items)
+      let albumData = data.albums.items;
+      this.setState({ albums: albumData })
     }, function(err) {
       console.error(err);
     });
@@ -82,10 +118,15 @@ class App extends React.Component {
     });
   }
 
-  clickHandler(event) {
+  clickHandler() {
+    // if playing, pause
+    // if no song selected in the first place, console log
+    // else, play the song
     if(this.state.playing) {
         this.state.audio.pause();
         this.setState({ playing: false })
+    } else if (this.state.audio === null) {
+        console.log("No song is selected.")
     } else {
         this.state.audio.play();
         this.setState({ playing: true })
@@ -95,12 +136,44 @@ class App extends React.Component {
   playAudio(tracks) {
     console.log("play audio is clicked!");
     console.log(tracks);
-    let previewUrl = tracks.preview_url
+
+    let previewUrl = tracks.preview_url;
+    if (previewUrl === null) {
+      this.setState({ errorMessage: "The selected song cannot be played."})
+    } else {
+      this.setState({ errorMessage: '' })
+    };
+
+    let previewImage;
+    if (tracks.album === undefined) {
+      // get track from track id
+      spotifyApi.getTrack(tracks.id)
+      .then(data => {
+        let albumData = data.album.images[1].url;
+        let albumImage = albumData;
+        this.setState({ preview: {
+                          image: albumImage,
+                          title: tracks.name,
+                          artist: tracks.artists[0].name
+                        }})
+      }, function(err) {
+        console.error(err);
+      });
+      // previewImage = './spotify.png'
+    } else {
+      previewImage = tracks.album.images[0].url;
+    }
+
     let audio = new Audio(previewUrl);
     if(!this.state.playing) {
         audio.play();
         this.setState({ playing: true,
                         playingUrl: previewUrl,
+                        preview: {
+                          image: previewImage,
+                          title: tracks.name,
+                          artist: tracks.artists[0].name
+                        },
                         audio
                 })
     } else {
@@ -112,10 +185,48 @@ class App extends React.Component {
             audio.play();
             this.setState({ playing: true,
                             playingUrl: previewUrl,
+                            preview: {
+                              image: previewImage,
+                              title: tracks.name,
+                              artist: tracks.artists[0].name
+                            },
                             audio 
                     })
         }
     }
+  }
+
+  clickArtist(artist) {
+    console.log(artist.id)
+
+    // search albums by a certain artist
+    spotifyApi.getArtistAlbums(artist.id)
+    .then(data => {
+      console.log(data)
+      let albumData = data.items;
+      this.setState({ albums: albumData })
+    }, function(err) {
+      console.error(err);
+    });
+  }
+
+  clickAlbum(album) {
+    console.log(album.id)
+
+    // search albums by a certain artist
+    spotifyApi.getAlbumTracks(album.id)
+    .then(data => {
+      console.log(data.items)
+      let trackData = data.items;
+      this.setState({ tracks: trackData })
+    }, function(err) {
+      console.error(err);
+    });
+  }
+
+  removeArtist() {
+    console.log("removeArtist Clicked")
+    this.setState({ artistClicked: false })
   }
 
   // clickHandler(event) {
@@ -171,23 +282,34 @@ class App extends React.Component {
         <Navbar onChange={this.changeHandler} user={this.state.user.name} />
         <div className="row">
           <div className="sidenav col-sm-2">
-            <Sidebar />
-            <div className="track-play">
-              <div></div>
+            <Sidebar errorMessage={this.state.errorMessage} />
+            {this.state.playingUrl && (
+              <div className="track-play">
+              <div>
+                <img src={this.state.preview.image} className="card-img-top track-img" />
+                <p className="track-text">{this.state.preview.title}</p>
+                <p className="track-text">{this.state.preview.artist}</p>
+              </div>
               <div className="track-play-inner" onClick={this.clickHandler} >
                 {
-                this.state.playing === true
-                ? <span>||</span>
-                : <span>&#9654;</span>
+                this.state.playing !== true
+                ? <span>&#9654;</span>
+                : <span>||</span>
                 }
               </div>
             </div>
+            )}
           </div>
           <div className="col-sm-10 main-content">
               <Gallery query={this.state.query} 
-                      artists={this.state.artists} 
+                      artists={this.state.artists}
+                      albums={this.state.albums} 
                       tracks={this.state.tracks} 
                       playAudio={this.playAudio}
+                      clickArtist={this.clickArtist}
+                      clickAlbum={this.clickAlbum}
+                      removeArtist={this.removeArtist}
+                      artistClicked={this.state.artistClicked}
                       />
           </div>
         </div>

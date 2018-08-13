@@ -11,7 +11,7 @@ class Navbar extends React.Component {
                     <input onChange={this.props.onChange} className="form-control form-control-sm" id="input-width" type="search" placeholder="Search for artists, songs & albums.." aria-label="Search" />
                 </form>
             </div>
-            <p>Welcome {this.props.user}</p>
+            <p id="welcome">Welcome {this.props.user}</p>
             </nav>
         </div>
       );

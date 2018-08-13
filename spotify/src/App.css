@@ -2,11 +2,18 @@
     width: 180px;
     display: inline-block;
     padding: 5px 5px;
+    position: relative;
 }
 
 .artist-img {
     width: 170px;
     height: 170px;
+    object-fit: cover;
+}
+
+.track-img {
+    width: 220px;
+    height: 220px;
     object-fit: cover;
 }
 
@@ -33,16 +40,14 @@
 
 .track-play{
     width: 220px;
-    height: 220px;
+    height: 260px;
     position: fixed;
-    top: 906px;
-    left: 0px;
-    border: 2px solid black;
+    top: 800px;
+    left: 3px;
+    /* border: 1px solid black; */
 }
 .track-play-inner{
     position: relative;
-    top: 20px;
-    left: 72px;
     text-align: center;
     font-size: 22px;
     background-color: grey;
@@ -50,9 +55,8 @@
     width: 35px;
     height: 35px;
     color: black;
-    margin-left: 15px;
-    margin-top: 152px;
-
+    left: 80px;
+    top: 3px;
 }
 .track-play-inner:hover{
     /* opacity: 0.8; */
@@ -68,3 +72,8 @@
         opacity: 0.9;
     }
 } 
+
+.track-text {
+    font-size: 12px;
+    margin-bottom: 0px;
+}

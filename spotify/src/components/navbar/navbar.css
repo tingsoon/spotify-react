@@ -6,3 +6,6 @@ input::placeholder {
     width: 300px;
 }
 
+#welcome {
+    font-size: 12px;
+}

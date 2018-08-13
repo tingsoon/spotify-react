@@ -5,7 +5,8 @@ class Sidebar extends React.Component {
     render() {
       return (
         <div>
-            <p>Sidebar</p>
+            {/* <p>Sidebar</p> */}
+            <p id="error-message">{this.props.errorMessage}</p>
         </div>
       );
     }

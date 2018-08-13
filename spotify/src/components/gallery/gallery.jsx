@@ -19,13 +19,26 @@ class Gallery extends React.Component {
 
         // mapping artists
         let artists = this.props.artists.map( (artist, id) => { 
-          return  <div key={id} className="card">
-                    <img src={(artist.images[1] ? artist.images[1].url : './spotify.png')} className="card-img-top artist-img" />
-                    <div className="card-body">
-                        <p className="card-text">{artist.name}</p>
+            return  <div key={id} className="card">
+                    <img src={(artist.images[1] ? artist.images[1].url : './spotify.png')} className="card-img-top artist-img" onClick={() => {
+                                                                                                                                this.props.clickArtist(artist);
+                                                                                                                                this.props.removeArtist();
+                                                                                                                                }} />
+                    <div className="card-body d-flex">
+                        <p className="card-text" id="image-text">{artist.name}</p>
                     </div>
-                  </div> 
+                    </div> 
         });
+
+        // mapping albums
+        let albums = this.props.albums.map( (album, id) => {
+            return  <div key={id} className="card">
+                     <img src={(album.images[1] ? album.images[1].url : './spotify.png')} className="card-img-top artist-img" onClick={() => this.props.clickAlbum(album)} />
+                     <div className="card-body d-flex">
+                        <p className="card-text" id="image-text">{album.name}</p>
+                    </div>
+                    </div>
+        })
 
         // convert ms to mins & secs
         function millisToMinutesAndSeconds(millis) {
@@ -40,7 +53,7 @@ class Gallery extends React.Component {
                         <tr>
                             <td onClick={() => this.props.playAudio(tracks)}>{(tracks.name ? tracks.name : '')}</td>
                             <td>{(tracks.artists[0] ? tracks.artists[0].name : '')}</td>
-                            <td>{tracks.album.name ? tracks.album.name : ''}</td>
+                            <td>{tracks.name ? tracks.name : ''}</td>
                             <td>{millisToMinutesAndSeconds(tracks.duration_ms)}</td>
                         </tr>
                     </tbody>
@@ -50,9 +63,24 @@ class Gallery extends React.Component {
         <div className="main-content">
             <h4>{searchQuery}</h4>
             <br></br>
-            <h5>{searchArtists}</h5>
+            {this.props.artistClicked && (
+                <div>
+                {this.props.query && (
+                    <div>
+                    <h5>{searchArtists}</h5>
+                    <div>{artists}</div>
+                    <br />
+                    <br />
+                    </div>
+                )}
+                </div>
+            )}
+
             {this.props.query && (
-                <div>{artists}</div>
+                <div>
+                <h5>Displaying albums...</h5>
+                <div>{albums}</div>
+                </div>
             )}
             <br />
             <br />
