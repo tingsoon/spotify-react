@@ -17,6 +17,13 @@ class Gallery extends React.Component {
             searchArtists = "Displaying artists... "
         };
 
+        let searchNewReleases;
+        if (!this.props.query) {
+            searchNewReleases = "Showing new releases in the region"
+        } else {
+            searchNewReleases = "Displaying new albums..."
+        }
+
         // mapping artists
         let artists = this.props.artists.map( (artist, id) => { 
             return  <div key={id} className="card">
@@ -68,6 +75,7 @@ class Gallery extends React.Component {
                 {this.props.query && (
                     <div>
                     <h5>{searchArtists}</h5>
+                    <br />
                     <div>{artists}</div>
                     <br />
                     <br />
@@ -75,16 +83,13 @@ class Gallery extends React.Component {
                 )}
                 </div>
             )}
-
-            {this.props.query && (
                 <div>
-                <h5>Displaying albums...</h5>
+                <h5>{searchNewReleases}</h5>
+                <br />
                 <div>{albums}</div>
                 </div>
-            )}
             <br />
             <br />
-            {this.props.query && (
                 <div>
                 <h5>Displaying songs...</h5>
                 <table className="table">
@@ -96,11 +101,13 @@ class Gallery extends React.Component {
                         <th scope="col">Time</th>
                         </tr>
                     </thead>
+                    <br />
                     {tracks}
                 </table>
                 </div>
-            )}
-
+                <br />
+                <br />
+                <br />
         </div>
       );
     }

@@ -23,6 +23,7 @@ class App extends React.Component {
     this.clickArtist = this.clickArtist.bind( this );
     this.clickAlbum = this.clickAlbum.bind( this );
     this.removeArtist = this.removeArtist.bind( this );
+
     this.state = {
       query: '',
       artists: [],
@@ -72,20 +73,36 @@ class App extends React.Component {
       }
     })})
 
-    // test 
-    // fetch('https://api.spotify.com/v1/me/top/tracks?time_range=long_term', {
-    //   headers: {'Authorization': 'Bearer ' + accessToken}
-    // })
-    // .then(data => {
-    //   console.log(data);
-    // })
-    
+    // when load page, display new releases
+    if (!this.state.query) {
+      fetch('https://api.spotify.com/v1/browse/new-releases?country=SG&limit=20', {
+        headers: {'Authorization': 'Bearer ' + accessToken}
+      }).then(response => response.json())
+      .then(data => {
+        // console.log(data);
+        let albumData = data.albums.items;
+        this.setState({ albums: albumData })
+      })
+    }
   }
 
   changeHandler(event) {
     this.setState({ query: event.target.value,
                     artistClicked: true });
     console.log("searching", event.target.value);
+
+    // if search bar is empty, display new releases
+    if (!event.target.value) {
+      let parsed = queryString.parse(window.location.search);
+      let accessToken = parsed.access_token;
+      fetch('https://api.spotify.com/v1/browse/new-releases?country=SG&limit=20', {
+        headers: {'Authorization': 'Bearer ' + accessToken}
+      }).then(response => response.json())
+      .then(data => {
+        let albumData = data.albums.items;
+        this.setState({ albums: albumData })
+      })
+    }
 
     // search artists
     spotifyApi.searchArtists(event.target.value)
@@ -216,7 +233,6 @@ class App extends React.Component {
     // search albums by a certain artist
     spotifyApi.getAlbumTracks(album.id)
     .then(data => {
-      console.log(data.items)
       let trackData = data.items;
       this.setState({ tracks: trackData })
     }, function(err) {
@@ -228,6 +244,7 @@ class App extends React.Component {
     console.log("removeArtist Clicked")
     this.setState({ artistClicked: false })
   }
+
 
   // clickHandler(event) {
 
@@ -277,7 +294,6 @@ class App extends React.Component {
 
   render() {
     return (
-
       <div className="container app-window">
         <Navbar onChange={this.changeHandler} user={this.state.user.name} />
         <div className="row">

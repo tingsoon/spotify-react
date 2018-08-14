@@ -7,6 +7,7 @@ class Sidebar extends React.Component {
         <div>
             {/* <p>Sidebar</p> */}
             <p id="error-message">{this.props.errorMessage}</p>
+            <a href="http://localhost:8888/login">Click Here if refresh token expires.</a>
         </div>
       );
     }
