@@ -19,7 +19,7 @@ class Gallery extends React.Component {
 
         let searchNewReleases;
         if (!this.props.query) {
-            searchNewReleases = "Showing new releases in the region"
+            searchNewReleases = "Welcome to Spotified. Showing new releases in the region (SG)"
         } else {
             searchNewReleases = "Displaying new albums..."
         }
@@ -58,10 +58,10 @@ class Gallery extends React.Component {
         let tracks = this.props.tracks.map( (tracks, id) => {
             return  <tbody key={id}>
                         <tr>
-                            <td onClick={() => this.props.playAudio(tracks)}>{(tracks.name ? tracks.name : '')}</td>
-                            <td>{(tracks.artists[0] ? tracks.artists[0].name : '')}</td>
-                            <td>{tracks.name ? tracks.name : ''}</td>
-                            <td>{millisToMinutesAndSeconds(tracks.duration_ms)}</td>
+                            <td id="track-hover" onClick={() => this.props.playAudio(tracks)}>{(tracks.name ? tracks.name : '')}</td>
+                            <td id="track-hover" onClick={(event) => this.props.clickTable(event)}>{(tracks.artists[0] ? tracks.artists[0].name : '')}</td>
+                            <td id="track-hover" onClick={(event) => this.props.clickTable(event)}>{tracks.name ? tracks.name : ''}</td>
+                            <td id="track-hover">{millisToMinutesAndSeconds(tracks.duration_ms)}</td>
                         </tr>
                     </tbody>
         })

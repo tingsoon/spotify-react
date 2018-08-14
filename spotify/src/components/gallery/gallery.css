@@ -6,6 +6,11 @@
     padding: 25px 3px;
 }
 
+.card:hover {
+    opacity: 0.6;
+    text-transform: uppercase;
+}
+
 .table {
     font-size: 12px;
 }
@@ -16,4 +21,9 @@
 
 #image-text {
     height: 32px;
+}
+
+#track-hover:hover {
+    opacity: 0.5;
+    text-decoration-line: underline;
 }

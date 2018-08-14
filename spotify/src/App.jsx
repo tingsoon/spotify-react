@@ -23,6 +23,7 @@ class App extends React.Component {
     this.clickArtist = this.clickArtist.bind( this );
     this.clickAlbum = this.clickAlbum.bind( this );
     this.removeArtist = this.removeArtist.bind( this );
+    this.clickTable = this.clickTable.bind( this );
 
     this.state = {
       query: '',
@@ -30,7 +31,8 @@ class App extends React.Component {
       albums: [],
       tracks: [],
       user: {
-        name: ''
+        name: '',
+        link: ''
       },
       playingUrl: '',
       audio: null,
@@ -66,10 +68,11 @@ class App extends React.Component {
       headers: {'Authorization': 'Bearer ' + accessToken}
     }).then(response => response.json())
     .then(data => {
-      console.log(data);
+      console.log(data.external_urls.spotify);
       this.setState({
       user: {
-        name: data.id
+        name: data.id,
+        link: data.external_urls.spotify
       }
     })})
 
@@ -245,6 +248,11 @@ class App extends React.Component {
     this.setState({ artistClicked: false })
   }
 
+  clickTable(event) {
+    console.log(event.currentTarget.textContent)
+    let newSearch = event.currentTarget.textContent;
+    this.setState({ query: newSearch });
+  }
 
   // clickHandler(event) {
 
@@ -295,7 +303,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="container app-window">
-        <Navbar onChange={this.changeHandler} user={this.state.user.name} />
+        <Navbar onChange={this.changeHandler} user={this.state.user.name} userLink={this.state.user.link} />
         <div className="row">
           <div className="sidenav col-sm-2">
             <Sidebar errorMessage={this.state.errorMessage} />
@@ -326,6 +334,7 @@ class App extends React.Component {
                       clickAlbum={this.clickAlbum}
                       removeArtist={this.removeArtist}
                       artistClicked={this.state.artistClicked}
+                      clickTable={this.clickTable}
                       />
           </div>
         </div>

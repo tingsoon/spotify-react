@@ -4,8 +4,23 @@ input::placeholder {
 
 #input-width {
     width: 300px;
+    border-radius: 1rem;
 }
 
 #welcome {
     font-size: 12px;
+}
+
+.navbar {
+    background-color: #e0e0e0;
+}
+
+#user-link {
+    text-decoration: none;
+    color: black;
+}
+
+#user-link:hover {
+    text-decoration-line: underline;
+    color: blue;
 }
