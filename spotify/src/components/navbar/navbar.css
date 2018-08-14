@@ -5,6 +5,8 @@ input::placeholder {
 #input-width {
     width: 300px;
     border-radius: 1rem;
+    position: relative;
+    top: 4px;
 }
 
 #welcome {
@@ -12,15 +14,15 @@ input::placeholder {
 }
 
 .navbar {
-    background-color: #e0e0e0;
+    background-color: transparent ;
 }
 
 #user-link {
     text-decoration: none;
-    color: black;
+    color: #404040;
 }
 
 #user-link:hover {
     text-decoration-line: underline;
-    color: blue;
+    /* color: blue; */
 }

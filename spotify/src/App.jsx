@@ -251,7 +251,7 @@ class App extends React.Component {
   clickTable(event) {
     console.log(event.currentTarget.textContent)
     let newSearch = event.currentTarget.textContent;
-    this.setState({ query: newSearch });
+    // this.setState({ query: newSearch });
   }
 
   // clickHandler(event) {

@@ -21,7 +21,7 @@ class Gallery extends React.Component {
         if (!this.props.query) {
             searchNewReleases = "Welcome to Spotified. Showing new releases in the region (SG)"
         } else {
-            searchNewReleases = "Displaying new albums..."
+            searchNewReleases = "Displaying albums..."
         }
 
         // mapping artists
