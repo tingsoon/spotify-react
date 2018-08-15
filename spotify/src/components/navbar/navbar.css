@@ -15,6 +15,12 @@ input::placeholder {
 
 .navbar {
     background-color: transparent ;
+    transition: 0.5s;
+    opacity: 0.5;
+}
+
+.navbar:hover {
+    opacity: 1;
 }
 
 #user-link {
@@ -25,4 +31,21 @@ input::placeholder {
 #user-link:hover {
     text-decoration-line: underline;
     /* color: blue; */
+}
+
+#nav-title {
+    display: inline-block;
+    text-align: center;
+    margin: 0 auto;
+    position: relative;
+    right: 85px;
+}
+
+.fa-headphones {
+    display: inline-block;
+}
+
+#title {
+    display: inline-block;
+    padding: 5px;
 }

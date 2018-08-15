@@ -23,7 +23,8 @@ class App extends React.Component {
     this.clickArtist = this.clickArtist.bind( this );
     this.clickAlbum = this.clickAlbum.bind( this );
     this.removeArtist = this.removeArtist.bind( this );
-    this.clickTable = this.clickTable.bind( this );
+    this.clickTableArtists = this.clickTableArtists.bind( this );
+    // this.clickTableAlbums = this.clickTableAlbums.bind( this );
 
     this.state = {
       query: '',
@@ -248,11 +249,26 @@ class App extends React.Component {
     this.setState({ artistClicked: false })
   }
 
-  clickTable(event) {
-    console.log(event.currentTarget.textContent)
-    let newSearch = event.currentTarget.textContent;
-    // this.setState({ query: newSearch });
+  clickTableArtists(tracks) {
+    console.log("artist id", tracks)
+    // console.log(event.currentTarget.textContent)
+    let newSearch = tracks.artists[0].id;
+    let artistName = tracks.artists[0].name;
+
+    // get artist album 
+    spotifyApi.getArtistAlbums(newSearch)
+    .then(data => {
+      let albumData = data.items;
+      this.setState({ albums: albumData,
+                      query: artistName })
+    }, function(err) {
+      console.error(err);
+    });
   }
+
+  // clickTableAlbums(tracks) {
+  //   console.log("album id", tracks)
+  // }
 
   // clickHandler(event) {
 
@@ -309,6 +325,7 @@ class App extends React.Component {
             <Sidebar errorMessage={this.state.errorMessage} />
             {this.state.playingUrl && (
               <div className="track-play">
+              <h5><strong>Now Playing</strong></h5>
               <div>
                 <img src={this.state.preview.image} className="card-img-top track-img" />
                 <p className="track-text">{this.state.preview.title}</p>
@@ -334,7 +351,8 @@ class App extends React.Component {
                       clickAlbum={this.clickAlbum}
                       removeArtist={this.removeArtist}
                       artistClicked={this.state.artistClicked}
-                      clickTable={this.clickTable}
+                      clickTableArtists={this.clickTableArtists}
+                      // clickTableAlbums={this.clickTableAlbums}
                       />
           </div>
         </div>

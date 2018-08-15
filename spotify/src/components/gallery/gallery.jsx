@@ -5,16 +5,11 @@ class Gallery extends React.Component {
 
     render() {
         let searchQuery;
-        let searchArtists;
+
         if (this.props.query.length === 0) {
             searchQuery = ''
         } else {
             searchQuery = "Showing results for " + this.props.query + " ..."
-        };
-        if (this.props.query.length === 0) {
-            searchArtists = ''
-        } else {
-            searchArtists = "Displaying artists... "
         };
 
         let searchNewReleases;
@@ -59,8 +54,8 @@ class Gallery extends React.Component {
             return  <tbody key={id}>
                         <tr>
                             <td id="track-hover" onClick={() => this.props.playAudio(tracks)}>{(tracks.name ? tracks.name : '')}</td>
-                            <td id="track-hover" onClick={(event) => this.props.clickTable(event)}>{(tracks.artists[0] ? tracks.artists[0].name : '')}</td>
-                            <td id="track-hover" onClick={(event) => this.props.clickTable(event)}>{tracks.name ? tracks.name : ''}</td>
+                            <td id="track-hover" onClick={(event) => this.props.clickTableArtists(tracks)}>{(tracks.artists[0] ? tracks.artists[0].name : '')}</td>
+                            <td id="track-hover">{tracks.name ? tracks.name : ''}</td>
                             <td id="track-hover">{millisToMinutesAndSeconds(tracks.duration_ms)}</td>
                         </tr>
                     </tbody>
@@ -74,7 +69,7 @@ class Gallery extends React.Component {
                 <div>
                 {this.props.query && (
                     <div>
-                    <h5>{searchArtists}</h5>
+                    <h5>Displaying Artist...</h5>
                     <br />
                     <div>{artists}</div>
                     <br />
